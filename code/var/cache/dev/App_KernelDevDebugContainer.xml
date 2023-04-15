@@ -107,6 +107,7 @@
     <parameter key="session.save_path">null</parameter>
     <parameter key="session.metadata.update_threshold">0</parameter>
     <parameter key="form.type_extension.csrf.enabled">false</parameter>
+    <parameter key="validator.mapping.cache.file">/code/var/cache/dev/validation.php</parameter>
     <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="profiler_listener.only_exceptions">false</parameter>
     <parameter key="profiler_listener.only_main_requests">false</parameter>
@@ -198,6 +199,10 @@
         <parameter>memory</parameter>
         <parameter>@WebProfiler/Collector/memory.html.twig</parameter>
       </parameter>
+      <parameter key="data_collector.validator" type="collection">
+        <parameter>validator</parameter>
+        <parameter>@WebProfiler/Collector/validator.html.twig</parameter>
+      </parameter>
       <parameter key="data_collector.ajax" type="collection">
         <parameter>ajax</parameter>
         <parameter>@WebProfiler/Collector/ajax.html.twig</parameter>
@@ -257,7 +262,6 @@
     <service id="App\Controller\ViewController" class="App\Controller\ViewController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
-      <argument type="service" id="doctrine"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.mx0UMmY.App\Controller\ViewController"/>
       </call>
@@ -268,6 +272,11 @@
     <service id="App\Form\ArticleType" class="App\Form\ArticleType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
+    <service id="App\Helpers\ArticalFormHelper" class="App\Helpers\ArticalFormHelper" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine"/>
+      <argument type="service" id="form.factory"/>
+    </service>
+    <service id="App\Helpers\CacheHelper" class="App\Helpers\CacheHelper" autowire="true" autoconfigure="true"/>
     <service id="App\Repository\ArticleRepository" class="App\Repository\ArticleRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -388,7 +397,9 @@
         <argument key="debug.event_dispatcher" type="service" id="debug.event_dispatcher" on-invalid="ignore_uninitialized"/>
         <argument key="session_listener" type="service" id="session_listener" on-invalid="ignore_uninitialized"/>
         <argument key="form.choice_list_factory.cached" type="service" id="form.choice_list_factory.cached" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.validator_expression_language" type="service" id="cache.validator_expression_language" on-invalid="ignore_uninitialized"/>
         <argument key="profiler" type="service" id="profiler" on-invalid="ignore_uninitialized"/>
+        <argument key="debug.validator" type="service" id="debug.validator" on-invalid="ignore_uninitialized"/>
         <argument key="twig.form.engine" type="service" id="twig.form.engine" on-invalid="ignore_uninitialized"/>
         <argument key="doctrine" type="service" id="doctrine" on-invalid="ignore_uninitialized"/>
         <argument key="form.type.entity" type="service" id="form.type.entity" on-invalid="ignore_uninitialized"/>
@@ -424,7 +435,13 @@
         <argument key="form.choice_list_factory.cached" type="collection">
           <argument>reset</argument>
         </argument>
+        <argument key="cache.validator_expression_language" type="collection">
+          <argument>reset</argument>
+        </argument>
         <argument key="profiler" type="collection">
+          <argument>reset</argument>
+        </argument>
+        <argument key="debug.validator" type="collection">
           <argument>reset</argument>
         </argument>
         <argument key="twig.form.engine" type="collection">
@@ -569,6 +586,7 @@
         <argument>cache.serializer</argument>
         <argument>cache.annotations</argument>
         <argument>cache.property_info</argument>
+        <argument>cache.validator_expression_language</argument>
         <argument>cache.doctrine.orm.default.result</argument>
         <argument>cache.doctrine.orm.default.query</argument>
       </argument>
@@ -601,6 +619,7 @@
         <argument>cache.serializer</argument>
         <argument>cache.annotations</argument>
         <argument>cache.property_info</argument>
+        <argument>cache.validator_expression_language</argument>
         <argument>cache.doctrine.orm.default.result</argument>
         <argument>cache.doctrine.orm.default.query</argument>
       </argument>
@@ -621,6 +640,7 @@
         <argument>cache.serializer</argument>
         <argument>cache.annotations</argument>
         <argument>cache.property_info</argument>
+        <argument>cache.validator_expression_language</argument>
         <argument>cache.doctrine.orm.default.result</argument>
         <argument>cache.doctrine.orm.default.query</argument>
       </argument>
@@ -741,6 +761,17 @@
         <argument>Help debug routes by simulating a path info match</argument>
       </call>
     </service>
+    <service id="console.command.validator_debug" class="Symfony\Component\Validator\Command\DebugCommand">
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="debug.validator"/>
+      <call method="setName">
+        <argument>debug:validator</argument>
+      </call>
+      <call method="setDescription">
+        <argument>Display validation constraints for classes</argument>
+      </call>
+    </service>
     <service id="console.command.yaml_lint" class="Symfony\Bundle\FrameworkBundle\Command\YamlLintCommand">
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
@@ -771,11 +802,13 @@
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type\TransformationFailureExtension</argument>
         <argument>Symfony\Component\Form\Extension\HttpFoundation\Type\FormTypeHttpFoundationExtension</argument>
+        <argument>Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\Validator\Type\RepeatedTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\Validator\Type\SubmitTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\DataCollector\Type\DataCollectorTypeExtension</argument>
       </argument>
       <argument type="collection">
+        <argument>Symfony\Component\Form\Extension\Validator\ValidatorTypeGuesser</argument>
         <argument>Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser</argument>
       </argument>
       <argument type="service" id="debug.file_link_formatter" on-invalid="null"/>
@@ -1023,6 +1056,7 @@
         <argument key="cache.serializer" type="service" id="cache.serializer" on-invalid="ignore_uninitialized"/>
         <argument key="cache.annotations" type="service" id="cache.annotations" on-invalid="ignore_uninitialized"/>
         <argument key="cache.property_info" type="service" id="cache.property_info" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.validator_expression_language" type="service" id="cache.validator_expression_language" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
     <service id="cache.global_clearer" class="Symfony\Component\HttpKernel\CacheClearer\Psr6CacheClearer" public="true">
@@ -1034,6 +1068,7 @@
         <argument key="cache.serializer" type="service" id="cache.serializer" on-invalid="ignore_uninitialized"/>
         <argument key="cache.annotations" type="service" id="cache.annotations" on-invalid="ignore_uninitialized"/>
         <argument key="cache.property_info" type="service" id="cache.property_info" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.validator_expression_language" type="service" id="cache.validator_expression_language" on-invalid="ignore_uninitialized"/>
         <argument key="cache.doctrine.orm.default.result" type="service" id="cache.doctrine.orm.default.result" on-invalid="ignore_uninitialized"/>
         <argument key="cache.doctrine.orm.default.query" type="service" id="cache.doctrine.orm.default.query" on-invalid="ignore_uninitialized"/>
       </argument>
@@ -1761,6 +1796,7 @@
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
           <argument type="service" id="form.type_extension.form.http_foundation"/>
+          <argument type="service" id="form.type_extension.form.validator"/>
           <argument type="service" id="form.type_extension.form.data_collector"/>
         </argument>
         <argument key="Symfony\Component\Form\Extension\Core\Type\RepeatedType" type="iterator">
@@ -1771,8 +1807,13 @@
         </argument>
       </argument>
       <argument type="iterator">
+        <argument type="service" id="form.type_guesser.validator"/>
         <argument type="service" id="form.type_guesser.doctrine"/>
       </argument>
+    </service>
+    <service id="form.type_guesser.validator" class="Symfony\Component\Form\Extension\Validator\ValidatorTypeGuesser">
+      <tag name="form.type_guesser"/>
+      <argument type="service" id="debug.validator"/>
     </service>
     <service id="form.choice_list_factory.default" class="Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory"/>
     <service id="form.choice_list_factory.property_access" class="Symfony\Component\Form\ChoiceList\Factory\PropertyAccessDecorator">
@@ -1815,11 +1856,92 @@
     <service id="form.server_params" class="Symfony\Component\Form\Util\ServerParams">
       <argument type="service" id="request_stack"/>
     </service>
+    <service id="form.type_extension.form.validator" class="Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension">
+      <tag name="form.type_extension" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType"/>
+      <argument type="service" id="debug.validator"/>
+      <argument>true</argument>
+      <argument type="service" id="twig.form.renderer" on-invalid="ignore"/>
+      <argument>null</argument>
+    </service>
     <service id="form.type_extension.repeated.validator" class="Symfony\Component\Form\Extension\Validator\Type\RepeatedTypeValidatorExtension">
       <tag name="form.type_extension"/>
     </service>
     <service id="form.type_extension.submit.validator" class="Symfony\Component\Form\Extension\Validator\Type\SubmitTypeValidatorExtension">
       <tag name="form.type_extension" extended-type="Symfony\Component\Form\Extension\Core\Type\SubmitType"/>
+    </service>
+    <service id="validator.builder" class="Symfony\Component\Validator\ValidatorBuilder">
+      <call method="setConstraintValidatorFactory">
+        <argument type="service" id="validator.validator_factory"/>
+      </call>
+      <call method="setTranslationDomain">
+        <argument>validators</argument>
+      </call>
+      <call method="addXmlMappings">
+        <argument type="collection">
+          <argument>/code/vendor/symfony/form/Resources/config/validation.xml</argument>
+        </argument>
+      </call>
+      <call method="enableAnnotationMapping">
+        <argument>true</argument>
+      </call>
+      <call method="setDoctrineAnnotationReader">
+        <argument type="service" id="annotations.cached_reader"/>
+      </call>
+      <call method="addMethodMapping">
+        <argument>loadValidatorMetadata</argument>
+      </call>
+      <call method="addObjectInitializers">
+        <argument type="collection">
+          <argument type="service" id="doctrine.orm.validator_initializer"/>
+        </argument>
+      </call>
+      <call method="addLoader">
+        <argument type="service" id="validator.property_info_loader"/>
+      </call>
+      <call method="addLoader">
+        <argument type="service" id="doctrine.orm.default_entity_manager.validator_loader"/>
+      </call>
+      <factory class="Symfony\Component\Validator\Validation" method="createValidatorBuilder"/>
+    </service>
+    <service id="validator.mapping.cache_warmer" class="Symfony\Bundle\FrameworkBundle\CacheWarmer\ValidatorCacheWarmer">
+      <tag name="kernel.cache_warmer"/>
+      <argument type="service" id="validator.builder"/>
+      <argument>/code/var/cache/dev/validation.php</argument>
+    </service>
+    <service id="validator.mapping.cache.adapter" class="Symfony\Component\Cache\Adapter\PhpArrayAdapter">
+      <argument>/code/var/cache/dev/validation.php</argument>
+      <argument type="service" id="cache.validator"/>
+      <factory class="Symfony\Component\Cache\Adapter\PhpArrayAdapter" method="create"/>
+    </service>
+    <service id="validator.validator_factory" class="Symfony\Component\Validator\ContainerConstraintValidatorFactory">
+      <argument type="service" id=".service_locator.AHPGEE6"/>
+    </service>
+    <service id="validator.expression" class="Symfony\Component\Validator\Constraints\ExpressionValidator">
+      <tag name="validator.constraint_validator" alias="validator.expression"/>
+      <argument>null</argument>
+    </service>
+    <service id="cache.validator_expression_language" class="Symfony\Component\Cache\Adapter\TraceableAdapter" public="true">
+      <tag name="cache.pool"/>
+      <tag name="kernel.reset" method="reset"/>
+      <argument type="service" id="cache.validator_expression_language.recorder_inner"/>
+    </service>
+    <service id="validator.email" class="Symfony\Component\Validator\Constraints\EmailValidator">
+      <tag name="validator.constraint_validator" alias="Symfony\Component\Validator\Constraints\EmailValidator"/>
+      <argument>html5</argument>
+    </service>
+    <service id="validator.not_compromised_password" class="Symfony\Component\Validator\Constraints\NotCompromisedPasswordValidator">
+      <tag name="validator.constraint_validator" alias="Symfony\Component\Validator\Constraints\NotCompromisedPasswordValidator"/>
+      <argument>null</argument>
+      <argument>UTF-8</argument>
+      <argument>true</argument>
+      <argument>null</argument>
+    </service>
+    <service id="validator.property_info_loader" class="Symfony\Component\Validator\Mapping\Loader\PropertyInfoLoader">
+      <tag name="validator.auto_mapper"/>
+      <argument type="service" id="property_info"/>
+      <argument type="service" id="property_info"/>
+      <argument type="service" id="property_info"/>
+      <argument>null</argument>
     </service>
     <service id="profiler" class="Symfony\Component\HttpKernel\Profiler\Profiler" public="true">
       <tag name="monolog.logger" channel="profiler"/>
@@ -1836,6 +1958,9 @@
       </call>
       <call method="add">
         <argument type="service" id="data_collector.memory"/>
+      </call>
+      <call method="add">
+        <argument type="service" id="data_collector.validator"/>
       </call>
       <call method="add">
         <argument type="service" id="data_collector.ajax"/>
@@ -1959,6 +2084,10 @@
         <argument type="service" id="cache.property_info"/>
       </call>
       <call method="addInstance">
+        <argument>cache.validator_expression_language</argument>
+        <argument type="service" id="cache.validator_expression_language"/>
+      </call>
+      <call method="addInstance">
         <argument>cache.doctrine.orm.default.result</argument>
         <argument type="service" id="cache.doctrine.orm.default.result"/>
       </call>
@@ -1983,6 +2112,15 @@
     <service id="data_collector.form" class="Symfony\Component\Form\Extension\DataCollector\FormDataCollector">
       <tag name="data_collector" template="@WebProfiler/Collector/form.html.twig" id="form" priority="310"/>
       <argument type="service" id="data_collector.form.extractor"/>
+    </service>
+    <service id="debug.validator" class="Symfony\Component\Validator\Validator\TraceableValidator">
+      <tag name="container.private" package="symfony/framework-bundle" version="5.2"/>
+      <tag name="kernel.reset" method="reset"/>
+      <argument type="service" id="debug.validator.inner"/>
+    </service>
+    <service id="data_collector.validator" class="Symfony\Component\Validator\DataCollector\ValidatorDataCollector">
+      <tag name="data_collector" template="@WebProfiler/Collector/validator.html.twig" id="validator" priority="320"/>
+      <argument type="service" id="debug.validator"/>
     </service>
     <service id="twig" class="Twig\Environment" public="true">
       <tag name="container.preload" class="Twig\Cache\FilesystemCache"/>
@@ -2659,6 +2797,11 @@
       <tag name="property_info.type_extractor" priority="-999"/>
       <tag name="property_info.access_extractor" priority="-999"/>
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="doctrine.orm.default_entity_manager.validator_loader" class="Symfony\Bridge\Doctrine\Validator\DoctrineLoader">
+      <tag name="validator.auto_mapper" priority="-100"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument>null</argument>
     </service>
     <service id="doctrine.migrations.dependency_factory" class="Doctrine\Migrations\DependencyFactory">
       <argument type="service" id="doctrine.migrations.configuration_loader"/>
@@ -3492,21 +3635,40 @@
         <argument key="article" type="service_closure" id=".errored..service_locator.NyLbAvG.App\Entity\Article"/>
       </argument>
     </service>
-    <service id=".service_locator.tYw55x7" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.zVxSbHG" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="ArticalFormHelper" type="service_closure" id="App\Helpers\ArticalFormHelper"/>
+        <argument key="article" type="service_closure" id=".errored..service_locator.zVxSbHG.App\Entity\Article"/>
+        <argument key="cacheHelper" type="service_closure" id="App\Helpers\CacheHelper"/>
+      </argument>
+    </service>
+    <service id=".service_locator.3CdwDmA" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\IndexController::list" type="service_closure" id=".service_locator.i9Y0h6B"/>
         <argument key="App\Controller\ViewController::view" type="service_closure" id=".service_locator.NyLbAvG"/>
-        <argument key="App\Controller\ViewController::viewUpdate" type="service_closure" id=".service_locator.NyLbAvG"/>
+        <argument key="App\Controller\ViewController::viewUpdate" type="service_closure" id=".service_locator.zVxSbHG"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="App\Controller\IndexController:list" type="service_closure" id=".service_locator.i9Y0h6B"/>
         <argument key="App\Controller\ViewController:view" type="service_closure" id=".service_locator.NyLbAvG"/>
-        <argument key="App\Controller\ViewController:viewUpdate" type="service_closure" id=".service_locator.NyLbAvG"/>
+        <argument key="App\Controller\ViewController:viewUpdate" type="service_closure" id=".service_locator.zVxSbHG"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.xUrKPVU"/>
+      </argument>
+    </service>
+    <service id=".service_locator.AHPGEE6" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator" type="service_closure" id="doctrine.orm.validator.unique"/>
+        <argument key="Symfony\Component\Validator\Constraints\EmailValidator" type="service_closure" id="validator.email"/>
+        <argument key="Symfony\Component\Validator\Constraints\ExpressionValidator" type="service_closure" id="validator.expression"/>
+        <argument key="Symfony\Component\Validator\Constraints\NotCompromisedPasswordValidator" type="service_closure" id="validator.not_compromised_password"/>
+        <argument key="doctrine.orm.validator.unique" type="service_closure" id="doctrine.orm.validator.unique"/>
+        <argument key="validator.expression" type="service_closure" id="validator.expression"/>
       </argument>
     </service>
     <service id=".service_locator.lLv4pWF" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -3696,6 +3858,9 @@
         <argument key="session_factory" type="service_closure" id="session.factory" on-invalid="ignore"/>
       </argument>
     </service>
+    <service id="debug.validator.inner" class="Symfony\Component\Validator\Validator\ValidatorInterface">
+      <factory service="validator.builder" method="getValidator"/>
+    </service>
     <service id="debug.event_dispatcher.inner" class="Symfony\Component\EventDispatcher\EventDispatcher"/>
     <service id="debug.controller_resolver.inner" class="Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver">
       <argument type="service" id="service_container"/>
@@ -3720,12 +3885,12 @@
     <service id="debug.argument_resolver.request.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\RequestValueResolver"/>
     <service id="debug.argument_resolver.session.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\SessionValueResolver"/>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.tYw55x7"/>
+      <argument type="service" id=".service_locator.3CdwDmA"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.tYw55x7"/>
+      <argument type="service" id=".service_locator.3CdwDmA"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
       <call method="addDriver">
@@ -3735,6 +3900,7 @@
     </service>
     <service id=".errored..service_locator.xUrKPVU.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface"/>
     <service id=".errored..service_locator.NyLbAvG.App\Entity\Article" class="App\Entity\Article"/>
+    <service id=".errored..service_locator.zVxSbHG.App\Entity\Article" class="App\Entity\Article"/>
     <service id=".console.command.about.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>about</argument>
       <argument type="collection"/>
@@ -3853,6 +4019,13 @@
       <argument>Help debug routes by simulating a path info match</argument>
       <argument>false</argument>
       <argument type="service_closure" id="console.command.router_match"/>
+    </service>
+    <service id=".console.command.validator_debug.lazy" class="Symfony\Component\Console\Command\LazyCommand">
+      <argument>debug:validator</argument>
+      <argument type="collection"/>
+      <argument>Display validation constraints for classes</argument>
+      <argument>false</argument>
+      <argument type="service_closure" id="console.command.validator_debug"/>
     </service>
     <service id=".console.command.yaml_lint.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>lint:yaml</argument>
@@ -4090,7 +4263,7 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.RIn7ZZ1"/>
+      <argument type="service" id=".service_locator.m4am9mP"/>
       <argument type="collection">
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
@@ -4109,6 +4282,7 @@
         <argument key="debug:event-dispatcher">console.command.event_dispatcher_debug</argument>
         <argument key="debug:router">console.command.router_debug</argument>
         <argument key="router:match">console.command.router_match</argument>
+        <argument key="debug:validator">console.command.validator_debug</argument>
         <argument key="lint:yaml">console.command.yaml_lint</argument>
         <argument key="debug:form">console.command.form_debug</argument>
         <argument key="secrets:set">console.command.secrets_set</argument>
@@ -4179,7 +4353,7 @@
         <argument key="make:stimulus-controller">maker.auto_command.make_stimulus_controller</argument>
       </argument>
     </service>
-    <service id=".service_locator.RIn7ZZ1" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.m4am9mP" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="console.command.about" type="service_closure" id=".console.command.about.lazy"/>
@@ -4199,6 +4373,7 @@
         <argument key="console.command.event_dispatcher_debug" type="service_closure" id=".console.command.event_dispatcher_debug.lazy"/>
         <argument key="console.command.router_debug" type="service_closure" id=".console.command.router_debug.lazy"/>
         <argument key="console.command.router_match" type="service_closure" id=".console.command.router_match.lazy"/>
+        <argument key="console.command.validator_debug" type="service_closure" id=".console.command.validator_debug.lazy"/>
         <argument key="console.command.yaml_lint" type="service_closure" id=".console.command.yaml_lint.lazy"/>
         <argument key="console.command.form_debug" type="service_closure" id=".console.command.form_debug.lazy"/>
         <argument key="console.command.secrets_set" type="service_closure" id=".console.command.secrets_set.lazy"/>
@@ -4316,6 +4491,14 @@
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
+    <service id="cache.validator_expression_language.recorder_inner" class="Symfony\Component\Cache\Adapter\AdapterInterface">
+      <argument>bmIeCPZE4T</argument>
+      <argument>0</argument>
+      <argument>%container.build_id%</argument>
+      <argument>/code/var/cache/dev/pools/system</argument>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+      <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
+    </service>
     <service id="cache.doctrine.orm.default.result.recorder_inner" class="Symfony\Component\Cache\Adapter\ArrayAdapter"/>
     <service id="cache.doctrine.orm.default.query.recorder_inner" class="Symfony\Component\Cache\Adapter\ArrayAdapter"/>
     <service id=".service_locator.H84_pZM" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -4393,6 +4576,8 @@
     <service id="Symfony\Component\Form\FormFactoryInterface" alias="form.factory"/>
     <service id="form.property_accessor" alias="property_accessor"/>
     <service id="form.choice_list_factory" alias="form.choice_list_factory.cached"/>
+    <service id="Symfony\Component\Validator\Validator\ValidatorInterface" alias="debug.validator"/>
+    <service id="validator.mapping.class_metadata_factory" alias="debug.validator"/>
     <service id="Twig_Environment" alias="twig"/>
     <service id="Twig\Environment" alias="twig"/>
     <service id="Doctrine\DBAL\Connection" alias="doctrine.dbal.default_connection"/>
@@ -4412,7 +4597,7 @@
     <service id="doctrine.migrations.metadata_storage" alias="doctrine.migrations.storage.table_storage"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.tYw55x7"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.3CdwDmA"/>
     <service id="session" alias=".session.do-not-use" public="true">
       <deprecated package="symfony/framework-bundle" version="5.3">The "%alias_id%" service and "SessionInterface" alias are deprecated, use "$requestStack-&gt;getSession()" instead.</deprecated>
     </service>
@@ -4420,10 +4605,13 @@
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="Psr\Log\LoggerInterface" alias="logger"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
-    <service id=".service_locator.Sq08a9B" alias=".service_locator.tYw55x7"/>
+    <service id=".service_locator.Njx45BK" alias=".service_locator.zVxSbHG"/>
+    <service id=".service_locator.S8VtAuD" alias=".service_locator.3CdwDmA"/>
+    <service id=".service_locator.bkUSUfi" alias=".service_locator.AHPGEE6"/>
     <service id=".service_locator.tz.g440" alias=".service_locator.CminHI1"/>
     <service id=".service_locator.4hi2aOY" alias=".service_locator.bBRwv06"/>
     <service id=".service_locator.0ghLsew" alias=".service_locator.mx0UMmY"/>
+    <service id="validator" alias="debug.validator" public="true"/>
     <service id="event_dispatcher" alias="debug.event_dispatcher" public="true"/>
     <service id="controller_resolver" alias="debug.controller_resolver"/>
     <service id="argument_resolver" alias="debug.argument_resolver"/>
@@ -4440,6 +4628,7 @@
     <service id=".service_locator.uo5c0SP" alias=".service_locator.xUrKPVU"/>
     <service id=".service_locator.lQQ63Mn" alias=".service_locator.i9Y0h6B"/>
     <service id=".service_locator.YTyy9X4" alias=".service_locator.NyLbAvG"/>
+    <service id=".service_locator.r4kmNs0" alias=".service_locator.zVxSbHG"/>
     <service id=".service_locator.xwPrrlL" alias=".service_locator.mx0UMmY"/>
     <service id=".service_locator.L0rFhJm" alias=".service_locator.GVyCdgr"/>
   </services>

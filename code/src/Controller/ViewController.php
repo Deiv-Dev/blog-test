@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+
+use App\Helpers\ArticalFormHelper;
+use App\Helpers\CacheHelper;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,35 +26,22 @@ class ViewController extends AbstractController
         ]);
     }
 
-    private $registry;
-
-    public function __construct(ManagerRegistry $registry)
+    #[Route('/article-update/{id}', name: 'article_update')]
+    public function viewUpdate(Article $article, Request $request, ArticalFormHelper $ArticalFormHelper, CacheHelper $cacheHelper): Response
     {
-        $this->registry = $registry;
+        try {
+            $form = $ArticalFormHelper->createArticleForm($article, $request);
+            $ArticalFormHelper->handleArticleValidation($form, $article);
+            $cacheHelper->clearCache();
+            return $this->renderArticleUpdatePage($article, $form);
+        } catch (\Exception $e) {
+            $form = $ArticalFormHelper->createArticleForm($article, $request);
+            return $this->renderArticleUpdatePage($article, $form);
+        }
     }
 
-    #[Route('/article-update/{id}', name: 'article_update')]
-    public function viewUpdate(Article $article, Request $request): Response
+    private function renderArticleUpdatePage(Article $article, FormInterface $form): Response
     {
-        $form = $this->createForm(ArticleType::class, $article);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $article = $form->getData();
-            $entityManager = $this->registry->getManager();
-            $entityManager->persist($article);
-            $entityManager->flush();
-
-            $cache = new FilesystemAdapter();
-            $cache->clear();
-
-            return $this->render('pages/article-update.html.twig', [
-                'article' => $article,
-                'form' => $form->createView(),
-            ]);
-        }
-
         return $this->render('pages/article-update.html.twig', [
             'article' => $article,
             'form' => $form->createView(),

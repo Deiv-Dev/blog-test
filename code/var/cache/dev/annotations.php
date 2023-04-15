@@ -70,12 +70,8 @@ return [[
 '[C]App%5CController%5CViewController' => 1,
 'App%5CController%5CViewController%23view' => 0,
 '[C]App%5CController%5CViewController%23view' => 1,
-'App%5CController%5CViewController%23__construct' => 0,
-'[C]App%5CController%5CViewController%23__construct' => 1,
 'App%5CController%5CViewController%23viewUpdate' => 0,
 '[C]App%5CController%5CViewController%23viewUpdate' => 1,
-'App%5CController%5CViewController%24registry' => 0,
-'[C]App%5CController%5CViewController%24registry' => 1,
 'App%5CEntity%5CArticle' => 0,
 '[C]App%5CEntity%5CArticle' => 1,
 'App%5CEntity%5CArticle%23getId' => 0,
@@ -636,6 +632,6 @@ return [[
 ], [
 
 0 => [],
-1 => 1681569908,
+1 => 1681581672,
 
 ]];
