@@ -1,0 +1,6 @@
+{
+    "require": {
+        "symfony/webpack-encore-bundle": "*",
+        "symfony/webpack-encore-pack": "*"
+    }
+}
