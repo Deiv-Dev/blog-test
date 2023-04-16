@@ -6,10 +6,9 @@ use App\Entity\Article;
 
 class ArticleReadingTime
 {
-    public function getReadingTime(Article $article): int
+    public function getReadingTime(string $articleText): int
     {
-        $text = $article->getText();
-        $wordCount = str_word_count(strip_tags($text), 3);
+        $wordCount = str_word_count(strip_tags($articleText));
         $readingTime = ceil($wordCount / 200);
         return $readingTime;
     }

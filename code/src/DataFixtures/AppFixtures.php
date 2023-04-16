@@ -3,6 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Helpers\ArticleReadingTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -10,12 +12,18 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $articleReadingTime = new ArticleReadingTime();
+
         foreach ($this->getArticleData() as $articleData) {
             $article = new Article();
 
             $article->setTitle($articleData['name']);
             $article->setImage($articleData['img']);
             $article->setText($articleData['text']);
+            $article->setUpdatedAt(date('Y-m-d'));
+
+            $timeToRead = $articleReadingTime->getReadingTime($articleData['text']);
+            $article->setTimeToRead($timeToRead);
 
             $manager->persist($article);
         }

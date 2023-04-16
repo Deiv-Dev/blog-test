@@ -23,6 +23,12 @@ class Article
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $timeToRead = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $updatedAt = null;
+
     /**
      * @return int|null
      */
@@ -77,5 +83,37 @@ class Article
     public function setImage(?string $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUpdatedAt(): ?string
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param string|null $updatedAt
+     */
+    public function setUpdatedAt(?string $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimeToRead(): ?int
+    {
+        return $this->timeToRead;
+    }
+
+    /**
+     * @param string|null $timeToRead
+     */
+    public function setTimeToRead(?string $timeToRead): void
+    {
+        $this->timeToRead = $timeToRead;
     }
 }

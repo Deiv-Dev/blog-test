@@ -3,7 +3,6 @@
     <img src="{{ article.image }}" class="card-img-top">
     <div class="card-body">
         <h5 class="card-title">{{ article.title }}</h5>
-
         <p class="card-text">
             {% set cutoff = 80 %}
             {{ article.text|length > cutoff ? article.text|slice(0, cutoff) ~ '...' : article.text  }}
@@ -14,10 +13,13 @@
                 <a href="{{ path('article_view', {id: article.id}) }}" class="btn btn-sm btn-outline-secondary">View</a>
                 <a href="{{ path('article_update', {id: article.id}) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
             </div>
-
+            
             <small class="text-muted">
-                X mins
+                {{ article.timeToRead }} min
             </small>
+        </div>
+        <div class="pt-2">
+            <p>{{ article.updatedAt }}</p>
         </div>
     </div>
 </div>

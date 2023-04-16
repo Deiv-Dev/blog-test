@@ -51,32 +51,40 @@ class __TwigTemplate_d95623ceb17f9b339ee8aa9781ce55d2 extends Template
         // line 5
         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 5, $this->source); })()), "title", [], "any", false, false, false, 5), "html", null, true);
         echo "</h5>
-
         <p class=\"card-text\">
             ";
-        // line 8
+        // line 7
         $context["cutoff"] = 80;
-        // line 9
+        // line 8
         echo "            ";
-        echo twig_escape_filter($this->env, (((twig_length_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9)) > (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 9, $this->source); })()))) ? ((twig_slice($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9), 0, (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 9, $this->source); })())) . "...")) : (twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9))), "html", null, true);
+        echo twig_escape_filter($this->env, (((twig_length_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 8, $this->source); })()), "text", [], "any", false, false, false, 8)) > (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 8, $this->source); })()))) ? ((twig_slice($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 8, $this->source); })()), "text", [], "any", false, false, false, 8), 0, (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 8, $this->source); })())) . "...")) : (twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 8, $this->source); })()), "text", [], "any", false, false, false, 8))), "html", null, true);
         echo "
         </p>
 
         <div class=\"d-flex justify-content-between align-items-center\">
             <div class=\"btn-group\">
                 <a href=\"";
-        // line 14
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("article_view", ["id" => twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 14, $this->source); })()), "id", [], "any", false, false, false, 14)]), "html", null, true);
+        // line 13
+        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("article_view", ["id" => twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 13, $this->source); })()), "id", [], "any", false, false, false, 13)]), "html", null, true);
         echo "\" class=\"btn btn-sm btn-outline-secondary\">View</a>
                 <a href=\"";
-        // line 15
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("article_update", ["id" => twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 15, $this->source); })()), "id", [], "any", false, false, false, 15)]), "html", null, true);
+        // line 14
+        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("article_update", ["id" => twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 14, $this->source); })()), "id", [], "any", false, false, false, 14)]), "html", null, true);
         echo "\" class=\"btn btn-sm btn-outline-secondary\">Edit</a>
             </div>
-
+            
             <small class=\"text-muted\">
-                X mins
+                ";
+        // line 18
+        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 18, $this->source); })()), "timeToRead", [], "any", false, false, false, 18), "html", null, true);
+        echo " min
             </small>
+        </div>
+        <div class=\"pt-2\">
+            <p>";
+        // line 22
+        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 22, $this->source); })()), "updatedAt", [], "any", false, false, false, 22), "html", null, true);
+        echo "</p>
         </div>
     </div>
 </div>
@@ -101,7 +109,7 @@ class __TwigTemplate_d95623ceb17f9b339ee8aa9781ce55d2 extends Template
 
     public function getDebugInfo()
     {
-        return array (  73 => 15,  69 => 14,  60 => 9,  58 => 8,  52 => 5,  47 => 3,  43 => 1,);
+        return array (  86 => 22,  79 => 18,  72 => 14,  68 => 13,  59 => 8,  57 => 7,  52 => 5,  47 => 3,  43 => 1,);
     }
 
     public function getSourceContext()
@@ -111,7 +119,6 @@ class __TwigTemplate_d95623ceb17f9b339ee8aa9781ce55d2 extends Template
     <img src=\"{{ article.image }}\" class=\"card-img-top\">
     <div class=\"card-body\">
         <h5 class=\"card-title\">{{ article.title }}</h5>
-
         <p class=\"card-text\">
             {% set cutoff = 80 %}
             {{ article.text|length > cutoff ? article.text|slice(0, cutoff) ~ '...' : article.text  }}
@@ -122,10 +129,13 @@ class __TwigTemplate_d95623ceb17f9b339ee8aa9781ce55d2 extends Template
                 <a href=\"{{ path('article_view', {id: article.id}) }}\" class=\"btn btn-sm btn-outline-secondary\">View</a>
                 <a href=\"{{ path('article_update', {id: article.id}) }}\" class=\"btn btn-sm btn-outline-secondary\">Edit</a>
             </div>
-
+            
             <small class=\"text-muted\">
-                X mins
+                {{ article.timeToRead }} min
             </small>
+        </div>
+        <div class=\"pt-2\">
+            <p>{{ article.updatedAt }}</p>
         </div>
     </div>
 </div>

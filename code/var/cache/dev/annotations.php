@@ -72,6 +72,8 @@ return [[
 '[C]App%5CController%5CViewController%23view' => 1,
 'App%5CController%5CViewController%23viewUpdate' => 0,
 '[C]App%5CController%5CViewController%23viewUpdate' => 1,
+'App%5CController%5CViewController%23renderArticleUpdatePage' => 0,
+'[C]App%5CController%5CViewController%23renderArticleUpdatePage' => 1,
 'App%5CEntity%5CArticle' => 0,
 '[C]App%5CEntity%5CArticle' => 1,
 'App%5CEntity%5CArticle%23getId' => 0,
@@ -88,6 +90,14 @@ return [[
 '[C]App%5CEntity%5CArticle%23getImage' => 1,
 'App%5CEntity%5CArticle%23setImage' => 0,
 '[C]App%5CEntity%5CArticle%23setImage' => 1,
+'App%5CEntity%5CArticle%23getUpdatedAt' => 0,
+'[C]App%5CEntity%5CArticle%23getUpdatedAt' => 1,
+'App%5CEntity%5CArticle%23setUpdatedAt' => 0,
+'[C]App%5CEntity%5CArticle%23setUpdatedAt' => 1,
+'App%5CEntity%5CArticle%23getTimeToRead' => 0,
+'[C]App%5CEntity%5CArticle%23getTimeToRead' => 1,
+'App%5CEntity%5CArticle%23setTimeToRead' => 0,
+'[C]App%5CEntity%5CArticle%23setTimeToRead' => 1,
 'App%5CEntity%5CArticle%24id' => 0,
 '[C]App%5CEntity%5CArticle%24id' => 1,
 'App%5CEntity%5CArticle%24title' => 0,
@@ -96,6 +106,10 @@ return [[
 '[C]App%5CEntity%5CArticle%24text' => 1,
 'App%5CEntity%5CArticle%24image' => 0,
 '[C]App%5CEntity%5CArticle%24image' => 1,
+'App%5CEntity%5CArticle%24timeToRead' => 0,
+'[C]App%5CEntity%5CArticle%24timeToRead' => 1,
+'App%5CEntity%5CArticle%24updatedAt' => 0,
+'[C]App%5CEntity%5CArticle%24updatedAt' => 1,
 'Doctrine%5CBundle%5CDoctrineBundle%5CController%5CProfilerController' => 0,
 '[C]Doctrine%5CBundle%5CDoctrineBundle%5CController%5CProfilerController' => 1,
 'Doctrine%5CBundle%5CDoctrineBundle%5CController%5CProfilerController%23__construct' => 0,
@@ -632,6 +646,6 @@ return [[
 ], [
 
 0 => [],
-1 => 1681581672,
+1 => 1681627190,
 
 ]];

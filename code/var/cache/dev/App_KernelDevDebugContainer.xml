@@ -276,6 +276,7 @@
       <argument type="service" id="doctrine"/>
       <argument type="service" id="form.factory"/>
     </service>
+    <service id="App\Helpers\ArticleReadingTime" class="App\Helpers\ArticleReadingTime" autowire="true" autoconfigure="true"/>
     <service id="App\Helpers\CacheHelper" class="App\Helpers\CacheHelper" autowire="true" autoconfigure="true"/>
     <service id="App\Repository\ArticleRepository" class="App\Repository\ArticleRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>

@@ -51,7 +51,10 @@ class __TwigTemplate_34d953af08c61833eb4502aa4a237b4b extends Template
         // line 5
         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 5, $this->source); })()), "title", [], "any", false, false, false, 5), "html", null, true);
         echo "</h5>
-
+        <p>";
+        // line 6
+        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 6, $this->source); })()), "id", [], "any", false, false, false, 6), "html", null, true);
+        echo "<p>
         <p class=\"card-text\">
             ";
         // line 8
@@ -61,7 +64,7 @@ class __TwigTemplate_34d953af08c61833eb4502aa4a237b4b extends Template
         echo twig_escape_filter($this->env, (((twig_length_filter($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9)) > (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 9, $this->source); })()))) ? ((twig_slice($this->env, twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9), 0, (isset($context["cutoff"]) || array_key_exists("cutoff", $context) ? $context["cutoff"] : (function () { throw new RuntimeError('Variable "cutoff" does not exist.', 9, $this->source); })())) . "...")) : (twig_get_attribute($this->env, $this->source, (isset($context["article"]) || array_key_exists("article", $context) ? $context["article"] : (function () { throw new RuntimeError('Variable "article" does not exist.', 9, $this->source); })()), "text", [], "any", false, false, false, 9))), "html", null, true);
         echo "
         </p>
-
+        
         <div class=\"d-flex justify-content-between align-items-center\">
             <div class=\"btn-group\">
                 <a href=\"";
@@ -101,7 +104,7 @@ class __TwigTemplate_34d953af08c61833eb4502aa4a237b4b extends Template
 
     public function getDebugInfo()
     {
-        return array (  73 => 15,  69 => 14,  60 => 9,  58 => 8,  52 => 5,  47 => 3,  43 => 1,);
+        return array (  76 => 15,  72 => 14,  63 => 9,  61 => 8,  56 => 6,  52 => 5,  47 => 3,  43 => 1,);
     }
 
     public function getSourceContext()
@@ -111,12 +114,12 @@ class __TwigTemplate_34d953af08c61833eb4502aa4a237b4b extends Template
     <img src=\"{{ article.image }}\" class=\"card-img-top\">
     <div class=\"card-body\">
         <h5 class=\"card-title\">{{ article.title }}</h5>
-
+        <p>{{ article.id }}<p>
         <p class=\"card-text\">
             {% set cutoff = 80 %}
             {{ article.text|length > cutoff ? article.text|slice(0, cutoff) ~ '...' : article.text  }}
         </p>
-
+        
         <div class=\"d-flex justify-content-between align-items-center\">
             <div class=\"btn-group\">
                 <a href=\"{{ path('article_view', {id: article.id}) }}\" class=\"btn btn-sm btn-outline-secondary\">View</a>
