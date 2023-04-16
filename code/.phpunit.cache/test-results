@@ -1,0 +1,1 @@
+{"version":1,"defects":{"tests\\ArticleTest::testGetReadingTimeWithLongerArticle":7},"times":{"tests\\ArticleTest::testGetReadingTime":0.006,"tests\\ArticleTest::testGetReadingTimeWithLongerArticle":0,"tests\\ArticleTest::testGetReadingTimeWithEmptyArticle":0}}
