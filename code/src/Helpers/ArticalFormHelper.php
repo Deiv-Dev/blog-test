@@ -19,13 +19,6 @@ class ArticalFormHelper
         $this->formFactory = $formFactory;
     }
 
-    public function handleArticleValidation(FormInterface $form, Article $article): void
-    {
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->handleArticleUpdate($form, $article);
-        }
-    }
-
     public function createArticleForm(Article $article, Request $request): FormInterface
     {
         $form = $this->formFactory->create(\App\Form\ArticleType::class, $article);

@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArticleTest extends TestCase
 {
-    public function testGetReadingTime()
+    public function testGetReadingTimeOne()
     {
         $articleReadingTime = new ArticleReadingTime();
         $articleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at purus augue.";
@@ -14,11 +14,10 @@ class ArticleTest extends TestCase
         $this->assertEquals(1, $readingTime);
     }
 
-    public function testGetReadingTimeWithLongerArticle()
+    public function testGetReadingTimeTwo()
     {
         $articleReadingTime = new ArticleReadingTime();
-        $articleText = "
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et justo neque. Aliquam erat volutpat. Morbi fringilla leo eget odio fringilla, sed feugiat leo efficitur. Vestibulum ut massa accumsan, volutpat ligula eget, maximus ligula. Maecenas blandit molestie metus, quis fringilla odio pharetra id. Phasellus mattis, nisi vel aliquet aliquet, sapien lacus tincidunt risus, sed ullamcorper nisi tortor sit amet metus. Sed ac laoreet lectus.
+        $articleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et justo neque. Aliquam erat volutpat. Morbi fringilla leo eget odio fringilla, sed feugiat leo efficitur. Vestibulum ut massa accumsan, volutpat ligula eget, maximus ligula. Maecenas blandit molestie metus, quis fringilla odio pharetra id. Phasellus mattis, nisi vel aliquet aliquet, sapien lacus tincidunt risus, sed ullamcorper nisi tortor sit amet metus. Sed ac laoreet lectus.
         In neque risus, suscipit eget mattis at, volutpat at urna. Morbi varius leo quis enim finibus congue. Curabitur bibendum porta lectus quis blandit. Praesent sed nisl eu mi egestas aliquam. Quisque finibus commodo ullamcorper. Praesent mattis dapibus ipsum in imperdiet. Morbi tincidunt orci vel luctus sodales. Nunc nec quam fringilla, consectetur orci quis, facilisis magna.
         Nulla facilisi. Fusce eu ligula sed libero luctus congue. Integer interdum quam neque, in ullamcorper odio imperdiet eget. Maecenas eu eros sit amet nunc sagittis tempor elementum eu nibh. Donec ut pellentesque magna. Nulla in iaculis mi. Curabitur velit purus, pretium non vehicula in, consequat in quam.
         Phasellus id diam nec nulla accumsan rhoncus. Nulla id eros in sapien pretium dictum. Nam eleifend mollis faucibus. Nunc quis mauris augue. Sed quis facilisis justo. Nullam egestas pharetra nulla, quis rutrum odio gravida ut. Suspendisse sollicitudin augue et lorem convallis iaculis. Duis quis purus id tortor rhoncus pulvinar a id mi. Suspendisse tellus dui, ornare id eleifend eget, facilisis vel massa. Mauris tortor odio, ultricies fermentum mauris non, aliquet iaculis lectus. Praesent a tellus nibh.
@@ -27,7 +26,7 @@ class ArticleTest extends TestCase
         $this->assertEquals(2, $readingTime);
     }
 
-    public function testGetReadingTimeWithEmptyArticle()
+    public function testGetReadingTimeThree()
     {
         $articleReadingTime = new ArticleReadingTime();
         $articleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at purus augue. Cras blandit velit sit amet semper varius. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent aliquam lectus sit amet ligula accumsan pellentesque. Vivamus pellentesque dapibus condimentum. Aliquam ac tempor sem, at sollicitudin ipsum. Maecenas vestibulum nisl a elit congue, in faucibus felis sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque id urna vitae ante efficitur facilisis in nec nunc. Sed posuere tortor eget facilisis laoreet. Aliquam viverra eget metus in interdum. Nam rhoncus, felis laoreet feugiat vestibulum, leo nisl euismod justo, ac facilisis nisl quam eu sapien. Fusce sagittis augue eu tellus dignissim convallis. Nam in nisl semper, dignissim ipsum ut, pretium neque. Ut fringilla consectetur orci, ac varius lorem lacinia ac.

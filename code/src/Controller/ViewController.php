@@ -27,11 +27,14 @@ class ViewController extends AbstractController
     {
         try {
             $form = $ArticalFormHelper->createArticleForm($article, $request);
-            $ArticalFormHelper->handleArticleValidation($form, $article);
-            $cacheHelper->clearCache();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $ArticalFormHelper->handleArticleUpdate($form, $article);
+                $cacheHelper->clearCache();
+                $this->addFlash('success', 'Article updated successfully!');
+            }
             return $this->renderArticleUpdatePage($article, $form);
         } catch (\Exception $e) {
-            $form = $ArticalFormHelper->createArticleForm($article, $request);
+            $this->addFlash('error', 'An error occurred. Please try again later.');
             return $this->renderArticleUpdatePage($article, $form);
         }
     }
