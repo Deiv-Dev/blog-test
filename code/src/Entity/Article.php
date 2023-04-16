@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helpers\ArticleReadingTime;
 use App\Repository\ArticleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -114,6 +115,8 @@ class Article
      */
     public function setTimeToRead(?string $timeToRead): void
     {
+        $articleReadingTime = new ArticleReadingTime();
+        $timeToRead = $articleReadingTime->getReadingTime($this->getText());
         $this->timeToRead = $timeToRead;
     }
 }

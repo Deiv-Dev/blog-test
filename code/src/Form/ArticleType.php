@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,17 +25,17 @@ class ArticleType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('text', TextType::class, [
+            ->add('text', TextareaType::class, [
                 'constraints' => [
                     new Length([
                         'min' => 10,
-                        'max' => 5000,
+                        'max' => 10000,
                         'minMessage' => 'The text must be at least {{ limit }} characters long.',
                         'maxMessage' => 'The text cannot be longer than {{ limit }} characters.'
                     ]),
                 ],
             ])
-            ->add('image', TextType::class, [
+            ->add('image', TextareaType::class, [
                 'constraints' => [
                     new Length([
                         'min' => 10,

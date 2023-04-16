@@ -35,6 +35,13 @@ class ArticalFormHelper
 
     public function handleArticleUpdate(FormInterface $form, Article $article): void
     {
+        $articleReadingTime = new ArticleReadingTime();
+        $text = $form->get('text')->getData();
+        $timeToRead = $articleReadingTime->getReadingTime($text);
+
+        $article->setUpdatedAt(date('Y-m-d H:i'));
+
+        $article->setTimeToRead($timeToRead);
         $article = $form->getData();
         $entityManager = $this->registry->getManager();
         $entityManager->persist($article);

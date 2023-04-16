@@ -20,7 +20,7 @@ class AppFixtures extends Fixture
             $article->setTitle($articleData['name']);
             $article->setImage($articleData['img']);
             $article->setText($articleData['text']);
-            $article->setUpdatedAt(date('Y-m-d'));
+            $article->setUpdatedAt(date('Y-m-d H:i'));
 
             $timeToRead = $articleReadingTime->getReadingTime($articleData['text']);
             $article->setTimeToRead($timeToRead);
